@@ -6,9 +6,11 @@
  */
 
 // Dynamically determine the backend API base URL
+
 const API_BASE_URL = window.location.origin.includes(':8000')
   ? window.location.origin
-  : 'http://127.0.0.1:8000';
+  : 'https://wanderai-i870.onrender.com';
+
 
 // API Error message extraction helper
 function formatApiError(data, fallback = 'An unexpected error occurred.') {
