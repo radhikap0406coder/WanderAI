@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WanderAI — Smart Travel Planner</title>
+  <meta name="description" content="Your personalized travel planner. Create custom day-by-day itineraries, discover top sights, manage your budget, and pack smart.">
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ================= TOP NAVIGATION ================= -->
+  <header class="navbar" id="top-navbar">
+    <div class="nav-container">
+      <a href="#" class="brand" id="nav-brand" aria-label="WanderAI Home">
+        <div class="brand-icon">
+          <div class="brand-icon-inner">
+            <i data-lucide="compass"></i>
+          </div>
+        </div>
+        <div>
+          <span class="brand-title gradient-text">WanderAI</span>
+          <div class="brand-subtitle">Smart Travel Planner</div>
+        </div>
+      </a>
+
+      <!-- Center Navigation Links -->
+      <nav class="nav-links" aria-label="Main Navigation">
+        <a href="#hero" class="nav-link active">Home</a>
+        <a href="#planning-section" class="nav-link">Plan a Trip</a>
+        <a href="#how-it-works" class="nav-link">How It Works</a>
+        <button type="button" class="nav-link nav-btn-link" id="btn-open-saved-trips">
+          <i data-lucide="bookmark" style="width: 15px; height: 15px;"></i>
+          <span id="nav-saved-trips-text">Saved Trips</span>
+        </button>
+      </nav>
+
+      <div class="nav-actions">
+        <!-- Plan New Trip (Shown when a plan is loaded) -->
+        <button class="btn btn-primary btn-sm" id="btn-new-plan" style="display: none;">
+          <i data-lucide="plus" style="width: 15px; height: 15px;"></i>
+          <span>+ Plan New Trip</span>
+        </button>
+
+        <!-- Auth Navigation Actions (Logged Out State) -->
+        <div class="auth-nav-group" id="nav-auth-logged-out" style="display: flex; gap: 8px; align-items: center;">
+          <button type="button" class="btn btn-sm btn-outline btn-auth-nav" id="btn-open-login">
+            <i data-lucide="log-in" style="width: 14px; height: 14px;"></i>
+            <span>Log In</span>
+          </button>
+          <button type="button" class="btn btn-sm btn-primary btn-auth-nav" id="btn-open-register">
+            <span>Sign Up</span>
+          </button>
+        </div>
+
+        <!-- Auth Navigation Actions (Logged In State) -->
+        <div class="auth-nav-group" id="nav-auth-logged-in" style="display: none; gap: 10px; align-items: center;">
+          <div class="user-pill" id="user-profile-badge" title="Logged in account">
+            <i data-lucide="user" style="width: 14px; height: 14px; color: var(--accent-indigo);"></i>
+            <span id="user-display-name" class="user-name-text">Traveler</span>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline btn-logout" id="btn-logout" title="Log out of your account">
+            <i data-lucide="log-out" style="width: 14px; height: 14px;"></i>
+            <span>Log Out</span>
+          </button>
+        </div>
+
+        <!-- Settings Button -->
+        <button class="btn btn-icon" id="btn-open-settings" title="AI Model Preferences" aria-label="Settings">
+          <i data-lucide="settings" style="width: 16px; height: 16px;"></i>
+        </button>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="btn btn-icon mobile-menu-toggle" id="btn-mobile-menu" aria-label="Toggle navigation menu">
+          <i data-lucide="menu" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Drawer Nav -->
+    <div class="mobile-nav-drawer" id="mobile-nav-drawer">
+      <a href="#hero" class="mobile-nav-link">Home</a>
+      <a href="#planning-section" class="mobile-nav-link">Plan a Trip</a>
+      <a href="#how-it-works" class="mobile-nav-link">How It Works</a>
+      <button type="button" class="mobile-nav-link mobile-btn-link" id="btn-mobile-saved-trips">
+        <i data-lucide="bookmark" style="width: 16px; height: 16px;"></i>
+        <span id="mobile-saved-trips-text">Saved Trips</span>
+      </button>
+
+      <div class="mobile-auth-section" id="mobile-auth-logged-out" style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+        <button type="button" class="btn btn-outline" id="btn-mobile-login" style="width: 100%; justify-content: center;">
+          <i data-lucide="log-in" style="width: 15px; height: 15px;"></i>
+          <span>Log In</span>
+        </button>
+        <button type="button" class="btn btn-primary" id="btn-mobile-register" style="width: 100%; justify-content: center;">
+          <span>Create Free Account</span>
+        </button>
+      </div>
+
+      <div class="mobile-auth-section" id="mobile-auth-logged-in" style="margin-top: 12px; display: none; flex-direction: column; gap: 8px;">
+        <div class="user-pill mobile-user-pill" style="justify-content: center;">
+          <i data-lucide="user" style="width: 15px; height: 15px; color: var(--accent-indigo);"></i>
+          <span id="mobile-user-display-name">Traveler</span>
+        </div>
+        <button type="button" class="btn btn-outline btn-logout" id="btn-mobile-logout" style="width: 100%; justify-content: center;">
+          <i data-lucide="log-out" style="width: 15px; height: 15px;"></i>
+          <span>Log Out</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <main class="main-content">
+
+    <!-- Alert / Error Banner -->
+    <div id="error-banner" class="glass-panel error-panel" style="display: none;" role="alert">
+      <div class="error-content">
+        <i data-lucide="alert-circle" class="error-icon"></i>
+        <span id="error-message-text" class="error-text"></span>
+      </div>
+      <button type="button" class="btn btn-sm btn-dismiss" id="btn-dismiss-error">Dismiss</button>
+    </div>
+
+    <!-- ================= HERO SECTION ================= -->
+    <section class="hero-section" id="hero">
+      <div class="hero-pill">
+        <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i>
+        <span>Smart AI Travel Companion</span>
+      </div>
+      <h1 class="hero-title">Where to Next? Plan Your Dream Trip</h1>
+      <p class="hero-desc">
+        Create personalized day-by-day itineraries, discover curated sights, balance your travel budget, and explore like a local — all tailored directly to your personal vibe.
+      </p>
+
+      <!-- Hero Call To Actions -->
+      <div class="hero-cta-group">
+        <a href="#planning-section" class="btn btn-primary btn-lg" id="hero-btn-plan">
+          <span>Plan My Trip</span>
+          <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+        </a>
+        <a href="#how-it-works" class="btn btn-outline btn-lg" id="hero-btn-how">
+          <i data-lucide="compass" style="width: 18px; height: 18px;"></i>
+          <span>Explore How It Works</span>
+        </a>
+      </div>
+
+      <!-- Destination Inspiration Cards -->
+      <div class="destination-showcase">
+        <div class="showcase-header">
+          <div class="showcase-title">
+            <i data-lucide="map" style="width: 16px; height: 16px; color: var(--accent-indigo);"></i>
+            <span>Popular Inspirations (Click to autofill)</span>
+          </div>
+        </div>
+        <div class="destination-cards-grid">
+          <!-- Tokyo -->
+          <button type="button" class="dest-card" data-dest="Tokyo, Japan" aria-label="Choose Tokyo, Japan">
+            <div class="dest-card-image-wrap">
+              <img src="https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=600&q=80" alt="Tokyo, Japan" loading="lazy">
+              <div class="dest-card-overlay"></div>
+              <span class="dest-badge">🇯🇵 Tokyo</span>
+            </div>
+            <div class="dest-card-body">
+              <h4 class="dest-name">Tokyo, Japan</h4>
+              <p class="dest-tagline">Temples, neon streetscapes & world-class ramen</p>
+            </div>
+          </button>
+
+          <!-- Paris -->
+          <button type="button" class="dest-card" data-dest="Paris, France" aria-label="Choose Paris, France">
+            <div class="dest-card-image-wrap">
+              <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=600&q=80" alt="Paris, France" loading="lazy">
+              <div class="dest-card-overlay"></div>
+              <span class="dest-badge">🇫🇷 Paris</span>
+            </div>
+            <div class="dest-card-body">
+              <h4 class="dest-name">Paris, France</h4>
+              <p class="dest-tagline">Boutiques, historic art & charming sidewalk cafés</p>
+            </div>
+          </button>
+
+          <!-- Rome -->
+          <button type="button" class="dest-card" data-dest="Rome, Italy" aria-label="Choose Rome, Italy">
+            <div class="dest-card-image-wrap">
+              <img src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=600&q=80" alt="Rome, Italy" loading="lazy">
+              <div class="dest-card-overlay"></div>
+              <span class="dest-badge">🇮🇹 Rome</span>
+            </div>
+            <div class="dest-card-body">
+              <h4 class="dest-name">Rome, Italy</h4>
+              <p class="dest-tagline">Colosseum wonders, pasta taverns & cobblestone alleys</p>
+            </div>
+          </button>
+
+          <!-- Bali -->
+          <button type="button" class="dest-card" data-dest="Bali, Indonesia" aria-label="Choose Bali, Indonesia">
+            <div class="dest-card-image-wrap">
+              <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=600&q=80" alt="Bali, Indonesia" loading="lazy">
+              <div class="dest-card-overlay"></div>
+              <span class="dest-badge">🇮🇩 Bali</span>
+            </div>
+            <div class="dest-card-body">
+              <h4 class="dest-name">Bali, Indonesia</h4>
+              <p class="dest-tagline">Lush rice terraces, spiritual retreats & tropical shores</p>
+            </div>
+          </button>
+
+          <!-- Swiss Alps -->
+          <button type="button" class="dest-card" data-dest="Swiss Alps, Switzerland" aria-label="Choose Swiss Alps, Switzerland">
+            <div class="dest-card-image-wrap">
+              <img src="https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=600&q=80" alt="Swiss Alps, Switzerland" loading="lazy">
+              <div class="dest-card-overlay"></div>
+              <span class="dest-badge">🇨🇭 Swiss Alps</span>
+            </div>
+            <div class="dest-card-body">
+              <h4 class="dest-name">Swiss Alps</h4>
+              <p class="dest-tagline">Panoramic alpine vistas, emerald lakes & mountain air</p>
+            </div>
+          </button>
+
+          <!-- New York -->
+          <button type="button" class="dest-card" data-dest="New York City, USA" aria-label="Choose New York City, USA">
+            <div class="dest-card-image-wrap">
+              <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=600&q=80" alt="New York City, USA" loading="lazy">
+              <div class="dest-card-overlay"></div>
+              <span class="dest-badge">🇺🇸 New York</span>
+            </div>
+            <div class="dest-card-body">
+              <h4 class="dest-name">New York City</h4>
+              <p class="dest-tagline">Skyline views, Broadway shows & diverse neighborhoods</p>
+            </div>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= HOW IT WORKS SECTION ================= -->
+    <section class="how-it-works-section" id="how-it-works">
+      <div class="section-badge">
+        <i data-lucide="compass" style="width: 14px; height: 14px;"></i>
+        <span>Simple Process</span>
+      </div>
+      <h2 class="section-title">How It Works</h2>
+      <p class="section-subtitle">Turn your travel idea into a seamless itinerary in four effortless steps.</p>
+
+      <div class="how-steps-grid">
+        <div class="how-step-card glass-panel">
+          <div class="step-num">01</div>
+          <div class="step-icon-wrap" style="background: rgba(99, 102, 241, 0.15); color: var(--accent-indigo);">
+            <i data-lucide="sliders"></i>
+          </div>
+          <h3 class="step-title">Share Your Style</h3>
+          <p class="step-desc">Pick your destination, dates, budget, travel party, and favorite vibes. We customize everything around you.</p>
+        </div>
+
+        <div class="how-step-card glass-panel">
+          <div class="step-num">02</div>
+          <div class="step-icon-wrap" style="background: rgba(168, 85, 247, 0.15); color: var(--accent-purple);">
+            <i data-lucide="search"></i>
+          </div>
+          <h3 class="step-title">Smart Recommendations</h3>
+          <p class="step-desc">Our AI scouts must-see landmarks, hidden neighborhood gems, local food specialties, and weather insights.</p>
+        </div>
+
+        <div class="how-step-card glass-panel">
+          <div class="step-num">03</div>
+          <div class="step-icon-wrap" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald);">
+            <i data-lucide="calendar"></i>
+          </div>
+          <h3 class="step-title">Day-by-Day Schedule</h3>
+          <p class="step-desc">Get a balanced, timed daily itinerary with transit suggestions, activity descriptions, and estimated expenses.</p>
+        </div>
+
+        <div class="how-step-card glass-panel">
+          <div class="step-num">04</div>
+          <div class="step-icon-wrap" style="background: rgba(245, 158, 11, 0.15); color: var(--accent-amber);">
+            <i data-lucide="wallet"></i>
+          </div>
+          <h3 class="step-title">Budget & Pack Smart</h3>
+          <p class="step-desc">Track expenses in your preferred currency, check off packed essentials, and export your itinerary offline.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TRIP PLANNER FORM SECTION ================= -->
+    <section id="planning-section" class="planning-section">
+      <div class="section-header-centered">
+        <div class="section-badge">
+          <i data-lucide="calendar-check" style="width: 14px; height: 14px;"></i>
+          <span>Trip Builder</span>
+        </div>
+        <h2 class="section-title">Customize Your Travel Plan</h2>
+        <p class="section-subtitle">Fill in your travel preferences and let WanderAI craft your personalized itinerary.</p>
+      </div>
+
+      <!-- Quick Destination Chips -->
+      <div class="quick-chips-bar">
+        <span class="quick-chips-label">
+          <i data-lucide="sparkles" style="width: 13px; height: 13px;"></i> Quick Pick:
+        </span>
+        <div class="quick-chips-list">
+          <button type="button" class="quick-chip active" data-dest="Tokyo, Japan">🇯🇵 Tokyo</button>
+          <button type="button" class="quick-chip" data-dest="Paris, France">🇫🇷 Paris</button>
+          <button type="button" class="quick-chip" data-dest="Rome, Italy">🇮🇹 Rome</button>
+          <button type="button" class="quick-chip" data-dest="Bali, Indonesia">🇮🇩 Bali</button>
+          <button type="button" class="quick-chip" data-dest="New York City, USA">🇺🇸 New York</button>
+          <button type="button" class="quick-chip" data-dest="Barcelona, Spain">🇪🇸 Barcelona</button>
+          <button type="button" class="quick-chip" data-dest="Swiss Alps, Switzerland">🇨🇭 Swiss Alps</button>
+          <button type="button" class="quick-chip" data-dest="London, UK">🇬🇧 London</button>
+        </div>
+      </div>
+
+      <!-- Main Trip Parameters Form Card -->
+      <div class="glass-panel form-card">
+        <form id="trip-form" novalidate>
+          
+          <!-- Row 1: Destination & Origin -->
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="input-destination">
+                <i data-lucide="map-pin" class="label-icon text-indigo"></i>
+                Where do you want to go? <span class="required-star">*</span>
+              </label>
+              <input type="text" id="input-destination" class="form-input" value="Tokyo, Japan" required placeholder="e.g. Tokyo, Paris, Bali, Rome, New York">
+              <span class="input-hint">City, region, or country you are traveling to</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="input-origin">
+                <i data-lucide="plane-takeoff" class="label-icon text-sky"></i>
+                Where are you departing from? <span class="required-star">*</span>
+              </label>
+              <input type="text" id="input-origin" class="form-input" value="New York, USA" required placeholder="e.g. New York, London, Mumbai">
+              <span class="input-hint">Your starting city for transit context</span>
+            </div>
+          </div>
+
+          <!-- Row 2: Duration, Dates, Budget, Currency -->
+          <div class="form-grid-4">
+            <div class="form-group">
+              <label class="form-label" for="input-duration">
+                <i data-lucide="calendar" class="label-icon text-emerald"></i>
+                How many days? <span class="required-star">*</span>
+              </label>
+              <input type="number" id="input-duration" class="form-input" value="5" min="1" max="14" required>
+              <span class="input-hint">1 to 14 days</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="input-start-date">
+                <i data-lucide="clock" class="label-icon text-amber"></i>
+                When are you travelling?
+              </label>
+              <input type="date" id="input-start-date" class="form-input">
+              <span class="input-hint">Departure start date</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="input-budget">
+                <i data-lucide="dollar-sign" class="label-icon text-emerald"></i>
+                What's your budget? <span class="required-star">*</span>
+              </label>
+              <input type="number" id="input-budget" class="form-input" value="2500" min="50" step="50" required>
+              <span class="input-hint">Estimated total budget</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="select-currency">
+                <i data-lucide="coins" class="label-icon text-amber"></i>
+                Currency
+              </label>
+              <select id="select-currency" class="form-select">
+                <option value="USD" selected>$ USD (US Dollar)</option>
+                <option value="EUR">€ EUR (Euro)</option>
+                <option value="GBP">£ GBP (British Pound)</option>
+                <option value="INR">₹ INR (Indian Rupee)</option>
+                <option value="JPY">¥ JPY (Japanese Yen)</option>
+                <option value="CAD">CA$ CAD (Canadian Dollar)</option>
+                <option value="AUD">AU$ AUD (Australian Dollar)</option>
+              </select>
+              <span class="input-hint">Applied to all cost metrics</span>
+            </div>
+          </div>
+
+          <!-- Row 3: Travelers, Accommodation, Pacing -->
+          <div class="form-grid-3">
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <label class="form-label" for="select-traveler-type" style="margin-bottom: 0;">
+                  <i data-lucide="users" class="label-icon text-rose"></i>
+                  Who are you travelling with?
+                </label>
+                <span class="party-size-pill" id="party-size-pill">
+                  <span id="party-count-display">2</span> Travelers
+                </span>
+              </div>
+              <select id="select-traveler-type" class="form-select">
+                <option value="Solo">🎒 Solo Explorer (1 Person)</option>
+                <option value="Couple" selected>💑 Romantic Couple (2 People)</option>
+                <option value="Family">👨‍👩‍👧‍👦 Family with Kids (Specify Adults &amp; Children)</option>
+                <option value="Friends">🥂 Group of Friends (3+ People)</option>
+              </select>
+
+              <!-- Dynamic sub-controls for Family: Adults + Children -->
+              <div id="sub-family-controls" class="traveler-sub-panel" style="display: none;">
+                <div class="counter-sub-row">
+                  <div class="counter-sub-col">
+                    <label for="input-family-adults">Adults (18+)</label>
+                    <div class="number-stepper">
+                      <button type="button" class="stepper-btn" id="btn-adults-minus" aria-label="Decrease adults">−</button>
+                      <input type="number" id="input-family-adults" class="stepper-input" value="2" min="1" max="10">
+                      <button type="button" class="stepper-btn" id="btn-adults-plus" aria-label="Increase adults">+</button>
+                    </div>
+                  </div>
+                  <div class="counter-sub-col">
+                    <label for="input-family-children">Children (0-17)</label>
+                    <div class="number-stepper">
+                      <button type="button" class="stepper-btn" id="btn-children-minus" aria-label="Decrease children">−</button>
+                      <input type="number" id="input-family-children" class="stepper-input" value="2" min="0" max="10">
+                      <button type="button" class="stepper-btn" id="btn-children-plus" aria-label="Increase children">+</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Dynamic sub-controls for Friends: Exact Count -->
+              <div id="sub-friends-controls" class="traveler-sub-panel" style="display: none;">
+                <div class="counter-sub-row">
+                  <div class="counter-sub-col" style="flex: 1;">
+                    <label for="input-friends-count">Exact Friends Count (Min 3)</label>
+                    <div class="number-stepper">
+                      <button type="button" class="stepper-btn" id="btn-friends-minus" aria-label="Decrease friends">−</button>
+                      <input type="number" id="input-friends-count" class="stepper-input" value="4" min="3" max="20">
+                      <button type="button" class="stepper-btn" id="btn-friends-plus" aria-label="Increase friends">+</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <span class="input-hint" id="traveler-hint-text">2 travelers selected (1 room needed)</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="select-accommodation">
+                <i data-lucide="bed" class="label-icon text-indigo"></i>
+                Where do you want to stay?
+              </label>
+              <select id="select-accommodation" class="form-select">
+                <option value="Budget / Hostel">Budget / Backpacker Hostel</option>
+                <option value="Comfort Hotel (3-Star)">Comfort Hotel (3-Star)</option>
+                <option value="Boutique / 4-Star" selected>Boutique / 4-Star Hotel</option>
+                <option value="Luxury Resort (5-Star)">Luxury Resort / 5-Star</option>
+                <option value="Vacation Rental / Villa">Vacation Rental / Villa</option>
+              </select>
+              <span class="input-hint">Guides lodging cost allocation</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="select-pace">
+                <i data-lucide="gauge" class="label-icon text-teal"></i>
+                What pace do you prefer?
+              </label>
+              <select id="select-pace" class="form-select">
+                <option value="Relaxed">Relaxed (1-2 sights/day, leisurely)</option>
+                <option value="Balanced" selected>Balanced (2-3 sights/day, optimal)</option>
+                <option value="Fast-Paced">Action-Packed (3-4 sights/day, maximum sights)</option>
+              </select>
+              <span class="input-hint">Determines daily schedule density</span>
+            </div>
+          </div>
+
+          <!-- ================= "HOW DO YOU EXPERIENCE IT?" SECTION ================= -->
+          <div class="experience-section-wrap" id="experience-section">
+            <div class="experience-header">
+              <div class="experience-title-wrap">
+                <div class="experience-badge">
+                  <i data-lucide="heart" style="width: 14px; height: 14px;"></i>
+                  <span>Travel Vibes</span>
+                </div>
+                <h3 class="experience-heading">How do you experience it?</h3>
+              </div>
+              <p class="experience-subtext">
+                Select any combination of travel styles and interests to tailor your personalized daily schedule.
+              </p>
+            </div>
+
+            <!-- Interactive Experience Cards Grid -->
+            <div class="experience-cards-grid" id="interests-container" role="group" aria-label="Travel experience options">
+              
+              <!-- Card 1: Culture & History -->
+              <button type="button" class="experience-card selected" data-interest="Culture & History" aria-pressed="true">
+                <div class="experience-card-header">
+                  <div class="experience-icon-wrap">
+                    <i data-lucide="landmark"></i>
+                  </div>
+                  <span class="selection-check"><i data-lucide="check"></i></span>
+                </div>
+                <div class="experience-card-title">Culture & History</div>
+                <div class="experience-card-desc">Historic temples, heritage sites, castles & world-class museums</div>
+              </button>
+
+              <!-- Card 2: Culinary & Dining -->
+              <button type="button" class="experience-card selected" data-interest="Culinary & Dining" aria-pressed="true">
+                <div class="experience-card-header">
+                  <div class="experience-icon-wrap">
+                    <i data-lucide="utensils"></i>
+                  </div>
+                  <span class="selection-check"><i data-lucide="check"></i></span>
+                </div>
+                <div class="experience-card-title">Culinary & Dining</div>
+                <div class="experience-card-desc">Street eats, authentic eateries, wine tastings & culinary tours</div>
+              </button>
+
+              <!-- Card 3: Hidden Local Gems -->
+              <button type="button" class="experience-card selected" data-interest="Hidden Local Gems" aria-pressed="true">
+                <div class="experience-card-header">
+                  <div class="experience-icon-wrap">
+                    <i data-lucide="gem"></i>
+                  </div>
+                  <span class="selection-check"><i data-lucide="check"></i></span>
+                </div>
+                <div class="experience-card-title">Hidden Local Gems</div>
+                <div class="experience-card-desc">Quiet neighborhoods, secret alleys & spots only locals know</div>
+              </button>
+
+              <!-- Card 4: Nature & Outdoors -->
+              <button type="button" class="experience-card" data-interest="Nature & Outdoors" aria-pressed="false">
+                <div class="experience-card-header">
+                  <div class="experience-icon-wrap">
+                    <i data-lucide="trees"></i>
+                  </div>
+                  <span class="selection-check"><i data-lucide="check"></i></span>
+                </div>
+                <div class="experience-card-title">Nature & Outdoors</div>
+                <div class="experience-card-desc">Botanical gardens, mountain trails, viewpoints & serene parks</div>
+              </button>
+
+              <!-- Card 5: Beaches & Coastal -->
+              <button type="button" class="experience-card" data-interest="Beaches & Coastal" aria-pressed="false">
+                <div class="experience-card-header">
+                  <div class="experience-icon-wrap">
+                    <i data-lucide="palmtree"></i>
+                  </div>
+                  <span class="selection-check"><i data-lucide="check"></i></span>
+                </div>
+                <div class="experience-card-title">Beaches & Coastal</div>
+                <div class="experience-card-desc">Sun-drenched shores, boat excursions & oceanfront sunsets</div>
+              </button>
+
+              <!-- Card 6: Art & Architecture -->
+              <button type="button" class="experience-card" data-interest="Art & Architecture" aria-pressed="false">
+                <div class="experience-card-header">
+                  <div class="experience-icon-wrap">
+                    <i data-lucide="palette"></i>
+                  </div>
+                  <span class="selection-check"><i data-lucide="check"></i></span>
+                </div>
+                <div class="experience-card-title">Art & Architecture</div>
+                <div class="experience-card-desc">Iconic skylines, avant-garde galleries & striking urban design</div>
+              </button>
+
+              <!-- Card 7: Nightlife & Social -->
+              <button type="button" class="experience-card" data-interest="Nightlife & Social" aria-pressed="false">
+                <div class="experience-card-header">
+                  <div class="experience-icon-wrap">
+                    <i data-lucide="glass-water"></i>
+                  </div>
+                  <span class="selection-check"><i data-lucide="check"></i></span>
+                </div>
+                <div class="experience-card-title">Nightlife & Social</div>
+                <div class="experience-card-desc">Rooftop cocktail lounges, live acoustic sets & evening hubs</div>
+              </button>
+
+              <!-- Card 8: Shopping & Boutiques -->
+              <button type="button" class="experience-card" data-interest="Shopping & Boutiques" aria-pressed="false">
+                <div class="experience-card-header">
+                  <div class="experience-icon-wrap">
+                    <i data-lucide="shopping-bag"></i>
+                  </div>
+                  <span class="selection-check"><i data-lucide="check"></i></span>
+                </div>
+                <div class="experience-card-title">Shopping & Boutiques</div>
+                <div class="experience-card-desc">Artisan markets, vintage finds, fashion districts & souvenirs</div>
+              </button>
+
+              <!-- Card 9: Wellness & Spas -->
+              <button type="button" class="experience-card" data-interest="Wellness & Spas" aria-pressed="false">
+                <div class="experience-card-header">
+                  <div class="experience-icon-wrap">
+                    <i data-lucide="sparkles"></i>
+                  </div>
+                  <span class="selection-check"><i data-lucide="check"></i></span>
+                </div>
+                <div class="experience-card-title">Wellness & Spas</div>
+                <div class="experience-card-desc">Thermal baths, traditional onsens, massage therapy & yoga retreats</div>
+              </button>
+
+              <!-- Card 10: Scenic Photography -->
+              <button type="button" class="experience-card" data-interest="Scenic Photography" aria-pressed="false">
+                <div class="experience-card-header">
+                  <div class="experience-icon-wrap">
+                    <i data-lucide="camera"></i>
+                  </div>
+                  <span class="selection-check"><i data-lucide="check"></i></span>
+                </div>
+                <div class="experience-card-title">Scenic Photography</div>
+                <div class="experience-card-desc">Golden hour vantage points, dramatic landscapes & postcard vistas</div>
+              </button>
+
+              <!-- Card 11: Adventure & Sports -->
+              <button type="button" class="experience-card" data-interest="Adventure & Sports" aria-pressed="false">
+                <div class="experience-card-header">
+                  <div class="experience-icon-wrap">
+                    <i data-lucide="mountain"></i>
+                  </div>
+                  <span class="selection-check"><i data-lucide="check"></i></span>
+                </div>
+                <div class="experience-card-title">Adventure & Sports</div>
+                <div class="experience-card-desc">Cycling trails, water activities, thrilling excursions & sports</div>
+              </button>
+
+              <!-- Card 12: Local Markets -->
+              <button type="button" class="experience-card" data-interest="Local Markets" aria-pressed="false">
+                <div class="experience-card-header">
+                  <div class="experience-icon-wrap">
+                    <i data-lucide="store"></i>
+                  </div>
+                  <span class="selection-check"><i data-lucide="check"></i></span>
+                </div>
+                <div class="experience-card-title">Local Markets</div>
+                <div class="experience-card-desc">Bustling morning bazaars, fresh regional produce & craft stalls</div>
+              </button>
+
+            </div>
+          </div>
+
+          <!-- Row 5: Notes & Dietary Requests -->
+          <div class="form-group" style="margin-bottom: 28px;">
+            <label class="form-label" for="input-notes">
+              <i data-lucide="message-square" class="label-icon text-amber"></i>
+              Special Requests or Dietary Wishes (Optional)
+            </label>
+            <textarea id="input-notes" class="form-textarea" placeholder="e.g. Vegetarian dining, anniversary celebration on Day 2, wheelchair accessible paths, love specialty coffee..."></textarea>
+            <span class="input-hint">Mention any dietary needs, mobility accommodations, or specific wishes</span>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" id="btn-submit-plan" class="btn-submit">
+            <i data-lucide="sparkles" id="submit-icon" class="submit-icon"></i>
+            <span id="submit-text">Plan My Trip</span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ================= LIVE TRIP PREPARATION PROGRESS ================= -->
+    <section id="tracker-section" class="glass-panel tracker-card" style="display: none;">
+      <div class="tracker-header">
+        <div>
+          <div class="tracker-title-row">
+            <i data-lucide="compass" class="tracker-main-icon"></i>
+            <h3>Creating Your Travel Itinerary</h3>
+          </div>
+          <p class="tracker-subtitle">
+            Personalizing your schedule, recommended sights, and travel tips...
+          </p>
+        </div>
+        <div id="pipeline-status-badge">
+          <span class="badge-tag">
+            <i data-lucide="loader-2" class="spin"></i>
+            <span>Planning your trip...</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Planning Progress Steps -->
+      <div class="tracker-steps-grid">
+        <!-- Step 1 -->
+        <div class="step-progress-box" id="node-destination_agent">
+          <div class="step-progress-info">
+            <div class="step-progress-icon-wrap" style="background: rgba(14, 165, 233, 0.15); color: var(--accent-sky);">
+              <i data-lucide="map-pin"></i>
+            </div>
+            <div>
+              <div class="step-progress-title">Destination Guide</div>
+              <div class="step-progress-sub">Climate & Best Districts</div>
+            </div>
+          </div>
+          <div class="step-state-icon"><i data-lucide="circle"></i></div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-progress-box" id="node-budget_agent">
+          <div class="step-progress-info">
+            <div class="step-progress-icon-wrap" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald);">
+              <i data-lucide="dollar-sign"></i>
+            </div>
+            <div>
+              <div class="step-progress-title">Budget Strategy</div>
+              <div class="step-progress-sub">Daily Caps & Allocations</div>
+            </div>
+          </div>
+          <div class="step-state-icon"><i data-lucide="circle"></i></div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-progress-box" id="node-preferences_agent">
+          <div class="step-progress-info">
+            <div class="step-progress-icon-wrap" style="background: rgba(244, 63, 94, 0.15); color: var(--accent-rose);">
+              <i data-lucide="heart"></i>
+            </div>
+            <div>
+              <div class="step-progress-title">Travel Preferences</div>
+              <div class="step-progress-sub">Pacing & Interests</div>
+            </div>
+          </div>
+          <div class="step-state-icon"><i data-lucide="circle"></i></div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step-progress-box" id="node-research_agent">
+          <div class="step-progress-info">
+            <div class="step-progress-icon-wrap" style="background: rgba(245, 158, 11, 0.15); color: var(--accent-amber);">
+              <i data-lucide="search"></i>
+            </div>
+            <div>
+              <div class="step-progress-title">Places & Dining</div>
+              <div class="step-progress-sub">Top Sights & Local Gems</div>
+            </div>
+          </div>
+          <div class="step-state-icon"><i data-lucide="circle"></i></div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step-progress-box" id="node-itinerary_generator">
+          <div class="step-progress-info">
+            <div class="step-progress-icon-wrap" style="background: rgba(99, 102, 241, 0.15); color: var(--accent-indigo);">
+              <i data-lucide="calendar"></i>
+            </div>
+            <div>
+              <div class="step-progress-title">Daily Schedule</div>
+              <div class="step-progress-sub">Day-by-Day Route</div>
+            </div>
+          </div>
+          <div class="step-state-icon"><i data-lucide="circle"></i></div>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="step-progress-box" id="node-budget_calculator">
+          <div class="step-progress-info">
+            <div class="step-progress-icon-wrap" style="background: rgba(20, 184, 166, 0.15); color: var(--accent-teal);">
+              <i data-lucide="calculator"></i>
+            </div>
+            <div>
+              <div class="step-progress-title">Expense Estimates</div>
+              <div class="step-progress-sub">Cost Breakdown & Tips</div>
+            </div>
+          </div>
+          <div class="step-state-icon"><i data-lucide="circle"></i></div>
+        </div>
+
+        <!-- Step 7 -->
+        <div class="step-progress-box" id="node-final_planner">
+          <div class="step-progress-info">
+            <div class="step-progress-icon-wrap" style="background: rgba(168, 85, 247, 0.15); color: var(--accent-purple);">
+              <i data-lucide="sparkles"></i>
+            </div>
+            <div>
+              <div class="step-progress-title">Trip Overview</div>
+              <div class="step-progress-sub">Packing List & Essentials</div>
+            </div>
+          </div>
+          <div class="step-state-icon"><i data-lucide="circle"></i></div>
+        </div>
+      </div>
+
+      <!-- Live Travel Updates Feed -->
+      <div class="terminal-feed" id="terminal-feed-container">
+        <div class="terminal-line">
+          <span class="terminal-time">[Ready]</span>
+          <span class="terminal-msg">Starting your personalized trip preparation...</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= GENERATED TRIP DOSSIER ================= -->
+    <section id="dossier-section" class="dossier-section" style="display: none;">
+      
+      <!-- Top Overview Banner -->
+      <div class="glass-panel dossier-overview">
+        <div class="dossier-top">
+          <div>
+            <div class="dossier-badges-row">
+              <span class="badge-tag" id="dossier-duration-badge">5 Days Trip</span>
+              <span class="badge-tag badge-green" id="dossier-status-badge">Optimal Plan</span>
+              <span class="badge-tag" id="dossier-provider-badge" style="display: none;"></span>
+            </div>
+            <h2 id="dossier-title" class="dossier-title">Trip Itinerary</h2>
+            <p id="dossier-vibe" class="dossier-vibe"></p>
+          </div>
+
+          <div class="dossier-actions">
+            <button type="button" class="btn btn-outline btn-sm" id="btn-export-md" title="Export as Markdown file">
+              <i data-lucide="file-text" style="color: var(--accent-indigo);"></i>
+              <span>Export .md</span>
+            </button>
+            <button type="button" class="btn btn-outline btn-sm" id="btn-download-json" title="Download raw JSON data">
+              <i data-lucide="download" style="color: var(--accent-emerald);"></i>
+              <span>Download JSON</span>
+            </button>
+            <button type="button" class="btn btn-primary btn-sm" id="btn-print-pdf" title="Print or save as PDF">
+              <i data-lucide="printer"></i>
+              <span>Print / PDF</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Key Metrics (Group Budget, Estimated Total, Per Person, Daily Per Person) -->
+        <div class="dossier-metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Total Group Budget</div>
+            <div class="metric-val text-amber" id="metric-target-budget-val">$0</div>
+            <div class="metric-sub" id="metric-budget-sub">Combined group ceiling</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Estimated Total Cost</div>
+            <div class="metric-val text-emerald" id="metric-est-cost">$0</div>
+            <div class="metric-sub" id="metric-target-budget">All transit, lodging &amp; meals</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Total Cost / Person</div>
+            <div class="metric-val text-sky" id="metric-per-person-cost">$0</div>
+            <div class="metric-sub" id="metric-travelers-sub">2 travelers</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Spend / Person / Day</div>
+            <div class="metric-val text-indigo" id="metric-daily-cost">$0</div>
+            <div class="metric-sub" id="metric-duration-sub">5 days</div>
+          </div>
+        </div>
+
+        <!-- Group Budget Status Banner (Balance, Shortfall Alert & Trade-Offs) -->
+        <div class="budget-status-banner" id="budget-status-banner">
+          <div class="budget-status-header">
+            <div class="budget-status-info">
+              <span class="badge-tag" id="budget-balance-badge">Within Budget</span>
+              <span class="budget-rule-note">Total Group Budget (combined for all travelers)</span>
+            </div>
+            <div class="budget-balance-amount" id="budget-balance-amount">₹0</div>
+          </div>
+          <div class="budget-tradeoffs-box" id="budget-tradeoffs-box" style="display: none;">
+            <div class="tradeoffs-title">
+              <i data-lucide="alert-triangle" style="width: 16px; height: 16px; color: var(--accent-amber);"></i>
+              <span>Realistic Trade-Offs to Fit Your Budget</span>
+            </div>
+            <ul id="budget-tradeoffs-list" class="tradeoffs-list"></ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs (Only Real Consumer Travel Tabs) -->
+      <nav class="tabs-nav" id="dossier-tabs" aria-label="Itinerary Tabs">
+        <button type="button" class="tab-btn active" data-tab="tab-itinerary">
+          <i data-lucide="calendar"></i>
+          <span>Day-by-Day Schedule</span>
+        </button>
+        <button type="button" class="tab-btn" data-tab="tab-budget">
+          <i data-lucide="dollar-sign"></i>
+          <span>Budget Breakdown</span>
+        </button>
+        <button type="button" class="tab-btn" data-tab="tab-packing">
+          <i data-lucide="luggage"></i>
+          <span>Packing Checklist</span>
+        </button>
+        <button type="button" class="tab-btn" data-tab="tab-guide">
+          <i data-lucide="book-open"></i>
+          <span>Local Travel Guide</span>
+        </button>
+      </nav>
+
+      <!-- Tab 1: Itinerary -->
+      <div id="tab-itinerary" class="tab-panel">
+        <div id="itinerary-days-container"></div>
+      </div>
+
+      <!-- Tab 2: Budget View -->
+      <div id="tab-budget" class="tab-panel" style="display: none;">
+        <div class="glass-panel budget-panel">
+          <div class="budget-panel-header">
+            <h3>Budget &amp; Expense Breakdown</h3>
+            <p class="panel-subtitle">Itemized travel costs including intercity transit, lodging, food &amp; sights</p>
+          </div>
+
+          <!-- 5-Metric Group Budget Summary Card -->
+          <div class="budget-summary-card" id="budget-summary-card"></div>
+
+          <div class="budget-grid" id="budget-categories-list"></div>
+
+          <div class="budget-tips-box">
+            <h4 class="tips-box-title">
+              <i data-lucide="lightbulb" style="width: 16px; height: 16px;"></i> Money-Saving Recommendations
+            </h4>
+            <ul id="budget-saving-tips-list" class="tips-list"></ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Packing List -->
+      <div id="tab-packing" class="tab-panel" style="display: none;">
+        <div class="glass-panel packing-panel">
+          <div class="packing-panel-header">
+            <div>
+              <h3>Smart Packing Checklist</h3>
+              <p class="panel-subtitle">Tailored to your duration, planned activities, and forecast</p>
+            </div>
+            <div class="packing-counter-wrap">
+              <span class="packing-counter-label">Packed:</span>
+              <span id="packing-counter" class="packing-counter-val">0 / 0</span>
+            </div>
+          </div>
+
+          <div class="progress-bar-bg" style="margin-bottom: 24px;">
+            <div class="progress-bar-fill" id="packing-progress-bar" style="width: 0%;"></div>
+          </div>
+
+          <div class="packing-grid" id="packing-categories-container"></div>
+        </div>
+      </div>
+
+      <!-- Tab 4: Local Guide -->
+      <div id="tab-guide" class="tab-panel" style="display: none;">
+        <div class="glass-panel guide-panel">
+          <div class="guide-panel-header">
+            <h3>Local Customs & Travel Advice</h3>
+            <p class="panel-subtitle">Essential etiquette, cultural advice, and emergency contacts</p>
+          </div>
+
+          <div class="guide-grid">
+            <div>
+              <h4 class="guide-sub-heading text-indigo">
+                <i data-lucide="shield" style="width: 16px; height: 16px;"></i> Cultural Etiquette (Dos & Don'ts)
+              </h4>
+              <div id="cultural-customs-list" class="customs-list"></div>
+            </div>
+
+            <div>
+              <h4 class="guide-sub-heading text-rose">
+                <i data-lucide="phone-call" style="width: 16px; height: 16px;"></i> Emergency Contacts
+              </h4>
+              <div id="emergency-contacts-grid" class="emergency-grid"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="modal-settings" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="settings" style="color: var(--accent-indigo);"></i>
+          <h3 id="settings-modal-title">Preferences & AI Engine</h3>
+        </div>
+        <button type="button" class="close-btn" id="close-modal-settings" aria-label="Close modal">&times;</button>
+      </div>
+
+      <form id="settings-form">
+        <div class="modal-body">
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label class="form-label" for="settings-provider">AI Provider</label>
+            <select id="settings-provider" class="form-select">
+              <option value="auto">Auto-Detect (Google Gemini)</option>
+              <option value="gemini">Google Gemini</option>
+              <option value="offline">Offline Mode (Built-in Heuristic Engine)</option>
+            </select>
+            <span class="input-hint">Select your preferred AI model</span>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label class="form-label" for="settings-api-key">Custom API Key (Optional)</label>
+            <input type="password" id="settings-api-key" class="form-input" placeholder="Leave blank to use server environment key">
+            <span class="input-hint">Keys are kept safely in your local browser storage</span>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary" style="width: 100%;">Save Preferences</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= AUTH: LOGIN MODAL ================= -->
+  <div class="modal-overlay" id="modal-auth-login" role="dialog" aria-modal="true" aria-labelledby="login-modal-title">
+    <div class="modal-box modal-box-auth">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="log-in" style="color: var(--accent-indigo);"></i>
+          <h3 id="login-modal-title">Welcome Back</h3>
+        </div>
+        <button type="button" class="close-btn" id="close-modal-login" aria-label="Close modal">&times;</button>
+      </div>
+
+      <form id="form-auth-login" class="auth-form" novalidate>
+        <div class="modal-body">
+          <p class="auth-subtitle">Log in to WanderAI to access your saved trips and personalized itineraries.</p>
+
+          <div class="auth-alert error" id="login-alert-error" style="display: none;"></div>
+          <div class="auth-alert success" id="login-alert-success" style="display: none;"></div>
+
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label for="login-email" class="form-label">Email Address</label>
+            <input type="email" id="login-email" class="form-input" placeholder="you@example.com" required autocomplete="email">
+            <span class="field-error-msg" id="login-email-error"></span>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label for="login-password" class="form-label">Password</label>
+            <input type="password" id="login-password" class="form-input" placeholder="Enter your password" required autocomplete="current-password">
+            <span class="field-error-msg" id="login-password-error"></span>
+          </div>
+        </div>
+
+        <div class="modal-footer auth-footer">
+          <button type="submit" class="btn btn-primary btn-block" id="btn-submit-login">
+            <span class="btn-text">Log In</span>
+          </button>
+
+          <div class="auth-switch-text">
+            Don't have an account? <button type="button" class="btn-text-link" id="switch-to-register">Create free account</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= AUTH: REGISTER MODAL ================= -->
+  <div class="modal-overlay" id="modal-auth-register" role="dialog" aria-modal="true" aria-labelledby="register-modal-title">
+    <div class="modal-box modal-box-auth">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="user-plus" style="color: var(--accent-indigo);"></i>
+          <h3 id="register-modal-title">Create WanderAI Account</h3>
+        </div>
+        <button type="button" class="close-btn" id="close-modal-register" aria-label="Close modal">&times;</button>
+      </div>
+
+      <form id="form-auth-register" class="auth-form" novalidate>
+        <div class="modal-body">
+          <p class="auth-subtitle">Sign up to permanently save and organize complete day-by-day travel itineraries.</p>
+
+          <div class="auth-alert error" id="register-alert-error" style="display: none;"></div>
+          <div class="auth-alert success" id="register-alert-success" style="display: none;"></div>
+
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label for="register-name" class="form-label">Full Name</label>
+            <input type="text" id="register-name" class="form-input" placeholder="e.g. Radhika Patel" required autocomplete="name">
+            <span class="field-error-msg" id="register-name-error"></span>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label for="register-email" class="form-label">Email Address</label>
+            <input type="email" id="register-email" class="form-input" placeholder="you@example.com" required autocomplete="email">
+            <span class="field-error-msg" id="register-email-error"></span>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label for="register-password" class="form-label">Password</label>
+            <input type="password" id="register-password" class="form-input" placeholder="At least 8 characters" minlength="8" required autocomplete="new-password">
+            <span class="input-hint">Must be at least 8 characters</span>
+            <span class="field-error-msg" id="register-password-error"></span>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label for="register-confirm-password" class="form-label">Confirm Password</label>
+            <input type="password" id="register-confirm-password" class="form-input" placeholder="Re-enter password" required autocomplete="new-password">
+            <span class="field-error-msg" id="register-confirm-password-error"></span>
+          </div>
+        </div>
+
+        <div class="modal-footer auth-footer">
+          <button type="submit" class="btn btn-primary btn-block" id="btn-submit-register">
+            <span class="btn-text">Create Account</span>
+          </button>
+
+          <div class="auth-switch-text">
+            Already have an account? <button type="button" class="btn-text-link" id="switch-to-login">Log In</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Saved Trips Modal -->
+  <div class="modal-overlay" id="modal-saved-trips" role="dialog" aria-modal="true" aria-labelledby="saved-trips-modal-title">
+    <div class="modal-box modal-box-lg">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="bookmark" style="color: var(--accent-indigo);"></i>
+          <h3 id="saved-trips-modal-title">Your Saved Itineraries</h3>
+        </div>
+        <button type="button" class="close-btn" id="close-modal-saved-trips" aria-label="Close modal">&times;</button>
+      </div>
+
+      <!-- User Account Banner inside Saved Trips -->
+      <div class="saved-trips-user-info" id="saved-trips-user-banner" style="display: none;">
+        <span id="saved-trips-user-text">Logged in</span>
+      </div>
+
+      <div id="saved-trips-list" class="saved-trips-list">
+        <div class="empty-saved-message">Loading saved itineraries...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-brand-col">
+        <div class="brand">
+          <div class="brand-icon">
+            <div class="brand-icon-inner">
+              <i data-lucide="compass"></i>
+            </div>
+          </div>
+          <div>
+            <span class="brand-title gradient-text">WanderAI</span>
+            <div class="brand-subtitle">Smart Travel Planner</div>
+          </div>
+        </div>
+        <p class="footer-desc">
+          Crafting unforgettable journeys with personalized itineraries, budget intelligence, and local insights.
+        </p>
+      </div>
+
+      <div class="footer-links-col">
+        <h5 class="footer-col-title">Navigation</h5>
+        <a href="#hero" class="footer-link">Home</a>
+        <a href="#planning-section" class="footer-link">Plan a Trip</a>
+        <a href="#how-it-works" class="footer-link">How It Works</a>
+        <a href="#experience-section" class="footer-link">Travel Styles</a>
+      </div>
+
+      <div class="footer-links-col">
+        <h5 class="footer-col-title">Top Destinations</h5>
+        <a href="#planning-section" class="footer-link" onclick="setDestinationFromFooter('Tokyo, Japan')">Tokyo, Japan</a>
+        <a href="#planning-section" class="footer-link" onclick="setDestinationFromFooter('Paris, France')">Paris, France</a>
+        <a href="#planning-section" class="footer-link" onclick="setDestinationFromFooter('Rome, Italy')">Rome, Italy</a>
+        <a href="#planning-section" class="footer-link" onclick="setDestinationFromFooter('Bali, Indonesia')">Bali, Indonesia</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="footer-bottom-inner">
+        <div>&copy; 2026 WanderAI. All rights reserved.</div>
+        <div>Designed for smart, stress-free travel.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ================= AI TRAVEL CHATBOT WIDGET ================= -->
+  <div class="chat-widget" id="chat-widget">
+    <!-- Floating Launcher Button -->
+    <button type="button" class="chat-launcher-btn" id="btn-chat-toggle" aria-label="Open WanderAI Travel Assistant" title="Chat with WanderAI">
+      <div class="chat-launcher-icon-wrap">
+        <i data-lucide="message-square" class="launcher-chat-icon"></i>
+        <i data-lucide="x" class="launcher-close-icon" style="display: none;"></i>
+      </div>
+      <span class="chat-launcher-label">Ask WanderAI</span>
+      <span class="chat-launcher-pulse"></span>
+    </button>
+
+    <!-- Expandable Chat Panel Window -->
+    <div class="chat-panel" id="chat-panel" role="dialog" aria-labelledby="chat-panel-title" style="display: none;">
+      <!-- Panel Header -->
+      <div class="chat-panel-header">
+        <div class="chat-header-info">
+          <div class="chat-avatar">
+            <i data-lucide="compass"></i>
+            <span class="chat-online-dot"></span>
+          </div>
+          <div>
+            <div class="chat-title" id="chat-panel-title">WanderAI Assistant</div>
+            <div class="chat-subtitle">AI Travel Companion • Online</div>
+          </div>
+        </div>
+        <div class="chat-header-actions">
+          <button type="button" class="chat-header-btn" id="btn-chat-clear" title="Clear conversation" aria-label="Clear conversation">
+            <i data-lucide="trash-2"></i>
+          </button>
+          <button type="button" class="chat-header-btn" id="btn-chat-minimize" title="Minimize chat" aria-label="Close chat">
+            <i data-lucide="minus"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Active Context Banner (dynamically updated) -->
+      <div class="chat-context-banner" id="chat-context-banner" style="display: none;">
+        <i data-lucide="map-pin" style="width: 12px; height: 12px;"></i>
+        <span id="chat-context-text">Context: Tokyo, Japan</span>
+      </div>
+
+      <!-- Messages Stream -->
+      <div class="chat-messages" id="chat-messages">
+        <!-- Welcome Message -->
+        <div class="chat-bubble chat-bubble-assistant">
+          <div class="bubble-avatar">
+            <i data-lucide="bot"></i>
+          </div>
+          <div class="bubble-content">
+            <p>Hello traveler! 👋 I'm your <strong>WanderAI Assistant</strong>.</p>
+            <p>I can help you discover hidden spots, recommend must-try local dishes, estimate budgets, or fine-tune your itinerary. How can I help today?</p>
+          </div>
+        </div>
+
+        <!-- Quick Prompts Chips -->
+        <div class="chat-quick-chips" id="chat-quick-chips">
+          <button type="button" class="chat-chip" data-msg="What are the top hidden culinary gems?">🍜 Top culinary gems</button>
+          <button type="button" class="chat-chip" data-msg="How can I save money on daily transit and food?">💰 Money-saving tips</button>
+          <button type="button" class="chat-chip" data-msg="What should I pack for this trip?">🎒 What should I pack?</button>
+          <button type="button" class="chat-chip" data-msg="Suggest a relaxed afternoon activity.">🌿 Relaxed afternoon ideas</button>
+        </div>
+      </div>
+
+      <!-- Typing Indicator -->
+      <div class="chat-typing-indicator" id="chat-typing-indicator" style="display: none;">
+        <div class="bubble-avatar">
+          <i data-lucide="bot"></i>
+        </div>
+        <div class="typing-bubble">
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+          <span class="typing-dot"></span>
+        </div>
+        <span class="typing-label">WanderAI is thinking...</span>
+      </div>
+
+      <!-- Chat Input Footer -->
+      <form class="chat-input-form" id="chat-input-form">
+        <div class="chat-input-wrap">
+          <input type="text" id="chat-input" class="chat-input" placeholder="Ask about places, food, packing..." autocomplete="off">
+          <button type="submit" class="chat-send-btn" id="btn-chat-send" aria-label="Send message">
+            <i data-lucide="send"></i>
+          </button>
+        </div>
+        <div class="chat-input-hint">Powered by Gemini AI • Press Enter to send</div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Application Script (Pure Vanilla ES6+) -->
+  <script src="app.js"></script>
+</body>
+</html>

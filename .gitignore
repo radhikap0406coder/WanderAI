@@ -1,0 +1,77 @@
+# Environment & Secrets (NEVER commit secrets to Git)
+.env
+.env.*
+.env.local
+!.env.example
+!backend/.env.example
+
+# Python Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# Python Bytecode & Caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local SQLite Database Files
+*.db
+*.sqlite
+*.sqlite3
+backend/data/*.db
+!backend/data/.gitkeep
+
+# Temporary Scratch & Log Files
+scratch/
+*.log
+logs/
+
+# Frontend Build & Dependencies
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/dist.zip
+*.zip
+*.tar.gz
+
+# OS & Editor Artifacts
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local SQLite Database Files
+*.db
+*.sqlite
+*.sqlite3
+backend/data/*.db
+!backend/data/.gitkeep
+
+# Temporary Scratch & Log Files
+scratch/
+*.log
+logs/
+
+# Frontend Build & Dependencies
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/dist.zip
+*.zip
+*.tar.gz
+
+# OS & Editor Artifacts
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
