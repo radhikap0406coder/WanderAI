@@ -7,9 +7,42 @@
 
 // Dynamically determine the backend API base URL
 
-const API_BASE_URL = window.location.origin.includes(':8000')
-  ? window.location.origin
-  : 'https://wanderai-i870.onrender.com';
+function resolveApiBaseUrl() {
+  // 1. Explicit window override (e.g. window.WANDERAI_API_BASE_URL)
+  if (typeof window !== 'undefined' && window.WANDERAI_API_BASE_URL) {
+    return String(window.WANDERAI_API_BASE_URL).replace(/\/+$/, '');
+  }
+
+  // 2. Vite environment variable (injected during build if set)
+  try {
+    if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE_URL) {
+      return String(import.meta.env.VITE_API_BASE_URL).replace(/\/+$/, '');
+    }
+  } catch (_) {
+    // import.meta may not exist in non-module runtimes
+  }
+
+  // 3. Localhost and local development auto-detection
+  if (typeof window !== 'undefined' && window.location) {
+    const origin = window.location.origin || '';
+    const hostname = window.location.hostname || '';
+
+    // If served directly from FastAPI backend port 8000
+    if (origin.includes(':8000')) {
+      return origin;
+    }
+
+    // If running on a local development server (e.g. localhost:3000, 5173, etc.)
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'http://127.0.0.1:8000';
+    }
+  }
+
+  // 4. Deployed production Render backend fallback
+  return 'https://wanderai-i870.onrender.com';
+}
+
+const API_BASE_URL = resolveApiBaseUrl();
 
 
 // API Error message extraction helper
@@ -90,8 +123,8 @@ const btnOpenSavedTrips = document.getElementById('btn-open-saved-trips');
 const btnCloseSavedTrips = document.getElementById('close-modal-saved-trips');
 const savedTripsList = document.getElementById('saved-trips-list');
 
-// Initialize on DOM load
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize Application
+function initializeApp() {
   initDateDefault();
   initQuickDestinations();
   initDestinationShowcase();
@@ -114,7 +147,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.lucide) {
     window.lucide.createIcons();
   }
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeApp);
+} else {
+  initializeApp();
+}
 
 // Handle initial URL hash for direct modal opening
 function handleInitialUrlHash() {
@@ -151,7 +190,7 @@ async function fetchBackendHealth() {
       console.log('Backend connected:', data.status, '| Provider:', data.provider);
     }
   } catch (err) {
-    console.warn('Backend server not connected yet on http://127.0.0.1:8000:', err);
+    console.warn(`Backend server not connected yet on ${API_BASE_URL}:`, err);
   }
 }
 
@@ -548,7 +587,7 @@ function initExportActions() {
       try {
         const res = await fetch(`${API_BASE_URL}/api/export/markdown`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: getAuthHeaders(),
           body: JSON.stringify(currentPlan),
         });
         if (!res.ok) throw new Error('Markdown export failed');
@@ -774,7 +813,7 @@ if (formEl) {
         renderFullDossier(currentPlan);
         finishLoadingState();
       } catch (fallbackErr) {
-        showError(fallbackErr.message || 'Could not connect to FastAPI backend on http://127.0.0.1:8000. Please verify the server is running.');
+        showError(fallbackErr.message || `Could not connect to FastAPI backend on ${API_BASE_URL}. Please verify the server is running.`);
         finishLoadingState();
       }
     }
@@ -1974,7 +2013,7 @@ async function handleChatSubmit() {
 
     const response = await fetch(`${API_BASE_URL}/api/chat`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getAuthHeaders(),
       body: JSON.stringify(payload),
     });
 
